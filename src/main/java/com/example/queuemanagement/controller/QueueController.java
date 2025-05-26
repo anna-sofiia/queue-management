@@ -90,7 +90,6 @@ public class QueueController {
     public String addClient(@ModelAttribute Client client, Model model) {
         List<ServiceType> selected = client.getServiceTypes().stream().toList();
 
-        // Перевірка: знаходимо усі вікна, які можуть обслуговувати ВСІ вибрані послуги
         List<Window> matchingWindows = windows.stream()
                 .filter(w -> w.getSupportedServices().containsAll(selected))
                 .toList();
@@ -103,10 +102,28 @@ public class QueueController {
             return "add-client";
         }
 
+        // 🔍 Перевірка на унікальність — той самий телефон і ті самі послуги
+        boolean alreadyExists = clientRepository.findAll().stream()
+                .anyMatch(existing ->
+                        Objects.equals(existing.getPhone(), client.getPhone()) &&
+                                Objects.equals(existing.getFirstName(), client.getFirstName()) &&
+                                Objects.equals(existing.getLastName(), client.getLastName()) &&
+                                Objects.equals(new HashSet<>(existing.getServiceTypes()), new HashSet<>(client.getServiceTypes()))
+                );
+
+        if (alreadyExists) {
+            model.addAttribute("client", client);
+            model.addAttribute("windowServices", getWindowServices());
+            model.addAttribute("serviceMap", ServiceType.getUkrainianMap());
+            model.addAttribute("error", "⚠️ Цей клієнт вже є в черзі.");
+            return "add-client";
+        }
+
         client.setQueueNumber(queueCounter++);
         clientRepository.save(client);
         return "redirect:/queue";
     }
+
 
 
     @PostMapping("/serve/{windowId}")
@@ -149,4 +166,11 @@ public class QueueController {
         archivedClientRepository.deleteAll();
         return "redirect:/archive";
     }
+
+    @PostMapping("/remove/{clientId}")
+    public String removeClient(@PathVariable Long clientId) {
+        clientRepository.deleteById(clientId);
+        return "redirect:/queue";
+    }
+
 }

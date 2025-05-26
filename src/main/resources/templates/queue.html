@@ -61,12 +61,17 @@
             <td th:text="${client.lastName}"></td>
             <td th:text="${client.phone}"></td>
             <td>
-                <span th:each="type, iter : ${client.serviceTypes}">
-                    <span th:text="${type.ukrainianName}"></span><span th:if="${!iter.last}">, </span>
-                </span>
+        <span th:each="type, iter : ${client.serviceTypes}">
+            <span th:text="${type.ukrainianName}"></span><span th:if="${!iter.last}">, </span>
+        </span>
             </td>
             <td th:text="${#temporals.format(client.arrivalTime, 'dd.MM.yyyy HH:mm')}"></td>
             <td th:text="${T(java.time.Duration).between(client.arrivalTime, T(java.time.LocalDateTime).now()).toMinutes()}"></td>
+            <td>
+                <form th:action="@{'/remove/' + ${client.id}}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">🗑 Видалити</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
