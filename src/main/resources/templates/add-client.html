@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Додати клієнта</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #eaf3fb;
+        }
+        .window-section {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="container mt-5">
+<h2 class="mb-4 text-primary">Форма додавання клієнта</h2>
+
+<a href="/" class="btn btn-outline-secondary mb-4">⬅ Назад до головної</a>
+
+<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+<form th:action="@{/add}" th:object="${client}" method="post">
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label">Ім’я:</label>
+            <input type="text" th:field="*{firstName}" class="form-control"
+                   required pattern="[А-Яа-яЁёІіЇїЄєҐґA-Za-z]{2,}"
+                   title="Лише літери, мінімум 2 символи"/>
+        </div>
+        <div class="col">
+            <label class="form-label">Прізвище:</label>
+            <input type="text" th:field="*{lastName}" class="form-control"
+                   required pattern="[А-Яа-яЁёІіЇїЄєҐґA-Za-z]{2,}"
+                   title="Лише літери, мінімум 2 символи"/>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Телефон:</label>
+        <input type="tel" th:field="*{phone}" class="form-control"
+               required pattern="^\+?[0-9]{10,15}$"
+               title="Введіть номер телефону від 10 до 15 цифр"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Послуги (можна обрати кілька):</label>
+
+        <div th:each="entry : ${windowServices}" class="window-section">
+            <h5 class="text-primary" th:text="'Вікно №' + ${entry.key}"></h5>
+            <div class="row">
+                <div class="col-md-4" th:each="s : ${entry.value}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               th:id="'chk__' + ${s}"
+                               th:value="${s}" th:field="*{serviceTypes}"/>
+                        <label class="form-check-label"
+                               th:for="'chk__' + ${s}"
+                               th:text="${s.ukrainianName}">Назва послуги</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">➕ Додати</button>
+    <a href="/" class="btn btn-secondary ms-2">Скасувати</a>
+</form>
+</body>
+</html>

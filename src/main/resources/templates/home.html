@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Головна сторінка</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #eef4fb;
+        }
+        .menu-box {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 80px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .menu-box h2 {
+            margin-bottom: 30px;
+        }
+        .menu-box a {
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="menu-box mx-auto">
+        <h2 class="text-primary">Система управління чергою</h2>
+        <div class="d-flex flex-column align-items-center gap-3">
+            <a class="btn btn-primary btn-lg" href="/add">➕ Додати клієнта</a>
+            <a class="btn btn-outline-primary btn-lg" href="/queue">📋 Переглянути чергу</a>
+            <a class="btn btn-outline-secondary btn-lg" href="/archive">📁 Архів клієнтів</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

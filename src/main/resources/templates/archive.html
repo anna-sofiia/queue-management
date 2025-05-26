@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Архів клієнтів</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #eef4ff;
+        }
+        .archive-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .btn-clear {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-clear:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body class="container mt-4">
+<h1 class="mb-4 text-primary">Архів обслугованих клієнтів</h1>
+
+<a class="btn btn-outline-primary mb-3" href="/">⬅ Назад до головної</a>
+
+<div class="archive-card">
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-light">
+        <tr>
+            <th>Номер</th>
+            <th>Ім’я</th>
+            <th>Прізвище</th>
+            <th>Телефон</th>
+            <th>Послуги</th>
+            <th>Час приходу</th>
+            <th>Час обслуговування</th>
+            <th>Очікував (хв)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${archivedClients}">
+            <td th:text="${client.queueNumber}"></td>
+            <td th:text="${client.firstName}"></td>
+            <td th:text="${client.lastName}"></td>
+            <td th:text="${client.phone}"></td>
+            <td th:text="${#strings.listJoin(archivedServiceNames[client.id], ', ')}"></td>
+            <td th:text="${#temporals.format(client.arrivalTime, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(client.servedTime, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${T(java.time.Duration).between(client.arrivalTime, client.servedTime).toMinutes()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form th:action="@{/archive/clear}" method="post">
+        <button class="btn btn-clear mt-2">🗑 Очистити архів</button>
+    </form>
+</div>
+</body>
+</html>

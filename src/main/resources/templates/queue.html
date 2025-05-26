@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Черга клієнтів</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f9ff;
+        }
+        .window-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .window-title {
+            font-weight: bold;
+        }
+        .btn-serve {
+            background-color: #20c997;
+            color: white;
+        }
+        .btn-serve:hover {
+            background-color: #17a085;
+        }
+    </style>
+</head>
+<body class="container mt-4">
+<h1 class="mb-4 text-primary">Поточна черга клієнтів</h1>
+
+<a class="btn btn-outline-secondary mb-4" href="/">⬅ Назад до головної</a>
+
+<div th:each="window : ${windows}" class="window-card">
+    <h4 class="window-title">
+        Вікно №<span th:text="${window.id}"></span>
+        (Обслуговує: <span th:text="${windowServices[window.id]}"></span>)
+    </h4>
+
+    <form th:action="@{'/serve/' + ${window.id}}" method="post">
+        <button class="btn btn-serve mb-3">✅ Обслуговувати першого клієнта</button>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>Номер</th>
+            <th>Ім’я</th>
+            <th>Прізвище</th>
+            <th>Телефон</th>
+            <th>Послуги</th>
+            <th>Час приходу</th>
+            <th>Очікує (хв)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${window.queue}">
+            <td th:text="${client.queueNumber}"></td>
+            <td th:text="${client.firstName}"></td>
+            <td th:text="${client.lastName}"></td>
+            <td th:text="${client.phone}"></td>
+            <td>
+                <span th:each="type, iter : ${client.serviceTypes}">
+                    <span th:text="${type.ukrainianName}"></span><span th:if="${!iter.last}">, </span>
+                </span>
+            </td>
+            <td th:text="${#temporals.format(client.arrivalTime, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${T(java.time.Duration).between(client.arrivalTime, T(java.time.LocalDateTime).now()).toMinutes()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2">
+    <a class="btn btn-primary" href="/add">➕ Додати нового клієнта</a>
+    <a class="btn btn-outline-secondary" href="/archive">📁 Переглянути архів</a>
+</div>
+</body>
+</html>
