@@ -11,7 +11,7 @@ RUN ./mvnw dependency:go-offline
 
 # Копіюємо решту файлів і збираємо проєкт
 COPY src ./src
-RUN ./mvnw package -DskipTests
+RUN ./mvnw package -DskipTests -Dmaven.test.skip=true
 
 # Вказуємо порт і команду запуску
 EXPOSE 8080
